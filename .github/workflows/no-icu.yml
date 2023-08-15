@@ -1,0 +1,30 @@
+name: No ICU build
+
+on: [push, workflow_dispatch]
+
+env:
+  PYTHON_VERSION: '3.11'
+
+jobs:
+  build-windows-no-icu:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Set up Python ${{ env.PYTHON_VERSION }}
+        uses: actions/setup-python@61a6322f88396a6271a6ee3565807d608ecaddd1  # v4.7.0
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+      - name: Install deps
+        run: choco install nasm
+      - name: Environment Information
+        run: npx envinfo
+      - name: Clone node
+        run: git clone -b v20.5.1 --single-branch https://github.com/nodejs/node --depth=10
+      - name: Build
+        run: |
+          cd node
+          ./vcbuild.bat without-intl
+      - run: 7z.exe a node-no-intl node/out/Release/node.exe
+      - uses: actions/upload-artifact@v3
+        with:
+          path: node-no-intl.7z
