@@ -23,7 +23,7 @@ jobs:
       - name: Build
         run: |
           cd node
-          ./vcbuild.bat without-intl
+          ./vcbuild.bat without-intl ltcg
       - run: 7z.exe a node-no-intl node/out/Release/node.exe
       - uses: actions/upload-artifact@v3
         with:
